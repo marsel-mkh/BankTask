@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ClientProductViewDto {
-     Long clientId;
-     Long productId;
+     String clientId;
+     String productId;
      LocalDate openDate;
      LocalDate closeDate;
      Status status;

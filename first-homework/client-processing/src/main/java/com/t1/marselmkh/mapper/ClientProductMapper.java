@@ -14,4 +14,6 @@ public interface ClientProductMapper {
     ClientProductViewDto toDto(ClientProduct clientProduct);
 
     ClientProductEventDto toEventDto(ClientProduct clientProduct);
+
+    ClientProductEventDto createToEventDto(ClientProductCreateDto clientProductCreateDto);
 }

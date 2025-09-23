@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -29,7 +28,4 @@ public class ClientProduct {
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
-    @Column(precision = 19, scale = 2)
-    private BigDecimal loanAmount; // необязательное поле для кредитных продуктов
 }

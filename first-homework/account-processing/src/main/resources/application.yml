@@ -24,15 +24,20 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: client-group
+      group-id: account-processing-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     properties:
       spring.json.trusted.packages: "*"
+      spring.json.ignore-unknown-fields: true
 
 server:
   port: 8081
+
+
+kafka:
+  topic:
+    client-products: "client_products"
+    client-cards: "client_cards"
+    client-transaction: "client_transactions"

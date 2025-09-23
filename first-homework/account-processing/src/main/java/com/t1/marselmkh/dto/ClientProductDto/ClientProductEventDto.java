@@ -1,4 +1,4 @@
-package com.t1.marselmkh.dto;
+package com.t1.marselmkh.dto.ClientProductDto;
 
 import com.t1.marselmkh.entity.Status;
 import jakarta.validation.constraints.NotBlank;
@@ -12,10 +12,10 @@ import lombok.experimental.FieldDefaults;
 public class ClientProductEventDto {
 
     @NotNull(message = "clientId is required")
-    Long clientId;
+    String clientId;
 
     @NotNull(message = "productId is required")
-    Long productId;
+    String productId;
 
     @NotBlank(message = "status cannot be blank")
     Status status;

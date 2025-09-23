@@ -54,13 +54,13 @@ public class ClientService {
         return userViewDto;
     }
 
-    public ClientViewDto getClientById(Long id) {
-        Client user = clientRepository.findById(id)
+    public ClientViewDto getByClientId(String id) {
+        Client client = clientRepository.findByClientId(id)
                 .orElseThrow(() -> {
                     log.error("Клиент с id {} не найден", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
                 });
         log.info("Клиент найден: id={}", id);
-        return clientMapper.toViewDto(user);
+        return clientMapper.toViewDto(client);
     }
 }

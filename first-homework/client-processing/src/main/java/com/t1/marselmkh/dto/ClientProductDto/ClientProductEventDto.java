@@ -14,5 +14,7 @@ public class ClientProductEventDto {
      String productId;
      Status status;
      BigDecimal loanAmount;
+     Double interestRate;
+     Integer monthCount;
 
 }

@@ -1,6 +1,6 @@
 package com.t1.marselmkh.service;
 
-import com.t1.marselmkh.dto.ClientProductEventDto;
+import com.t1.marselmkh.dto.ClientProductDto.ClientProductEventDto;
 import com.t1.marselmkh.entity.Account;
 import com.t1.marselmkh.entity.Status;
 import com.t1.marselmkh.mapper.AccountMapper;

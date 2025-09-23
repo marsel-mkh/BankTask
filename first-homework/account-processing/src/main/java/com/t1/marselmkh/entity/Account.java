@@ -20,9 +20,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long clientId;
+    private String clientId;
 
-    private Long productId;
+    private String productId;
 
     @Column(precision = 19, scale = 2)
     private BigDecimal balance;

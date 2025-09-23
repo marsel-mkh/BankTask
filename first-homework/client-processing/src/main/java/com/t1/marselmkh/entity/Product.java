@@ -14,7 +14,8 @@ import java.time.LocalDate;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_seq")
+    @SequenceGenerator(name = "product_seq", sequenceName = "product_seq", allocationSize = 1)
     private Long id;
 
     private String name;
@@ -27,4 +28,11 @@ public class Product {
 
     @Column(nullable = false, unique = true)
     private String productId;
+
+    @PrePersist
+    public void prePersist() {
+        if (productId == null) {
+            this.productId = key + "" + id;
+        }
+    }
 }

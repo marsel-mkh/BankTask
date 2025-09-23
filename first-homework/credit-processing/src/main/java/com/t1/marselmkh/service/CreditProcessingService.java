@@ -1,6 +1,6 @@
 package com.t1.marselmkh.service;
 
-import com.t1.marselmkh.dto.ClientProductEventDto;
+import com.t1.marselmkh.dto.ClientProductDto.ClientProductEventDto;
 import com.t1.marselmkh.dto.ClientInfoDto;
 import com.t1.marselmkh.entity.PaymentRegistry;
 import com.t1.marselmkh.entity.ProductRegistry;
@@ -38,22 +38,29 @@ public class CreditProcessingService {
     @Value("${ms1.getUrl}")
     private String ms1GetUrl;
 
-    @Transactional
-    public void processCredit(ClientProductEventDto clientProductEventDto) {
-        ClientInfoDto client = getClient(clientProductEventDto);
-        checkCreditLimitAndOverdue(clientProductEventDto);
+@Transactional
+public void processCredit(ClientProductEventDto clientProductEventDto) {
+    log.info("Старт обработки кредита. clientId={}", clientProductEventDto.getClientId());
+    ClientInfoDto client = getClient(clientProductEventDto);
+    log.debug("Информация о клиенте получена: {}", client);
 
-        ProductRegistry productRegistry = productRegistryMapper.toEntity(clientProductEventDto);
-        productRegistry = productRegistryRepository.save(productRegistry);
+    checkCreditLimitAndOverdue(clientProductEventDto);
+    log.info("Проверка лимита и просрочек пройдена. clientId={}", clientProductEventDto.getClientId());
 
+    ProductRegistry productRegistry = productRegistryMapper.toEntity(clientProductEventDto);
+    productRegistry = productRegistryRepository.save(productRegistry);
+    log.info("Продуктовый реестр создан. productRegistryId={}", productRegistry.getId());
 
-        List<PaymentRegistry> paymentRegistries = generatePaymentSchedule(clientProductEventDto.getLoanAmount(),
-                clientProductEventDto.getInterestRate(),
-                clientProductEventDto.getMonthCount(),
-                productRegistry.getId());
+    List<PaymentRegistry> paymentRegistries = generatePaymentSchedule(
+            clientProductEventDto.getLoanAmount(),
+            clientProductEventDto.getInterestRate(),
+            clientProductEventDto.getMonthCount(),
+            productRegistry.getId());
 
-        paymentRegistryRepository.saveAll(paymentRegistries);
-    }
+    paymentRegistryRepository.saveAll(paymentRegistries);
+    log.info("График платежей сохранён. productRegistryId={}, платежей={}", productRegistry.getId(), paymentRegistries.size());
+    log.info("Обработка кредита завершена. clientId={}", clientProductEventDto.getClientId());
+}
 
     private void checkCreditLimitAndOverdue(ClientProductEventDto clientProductEventDto) {
         List<ProductRegistry> credits =

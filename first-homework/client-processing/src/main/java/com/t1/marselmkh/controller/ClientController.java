@@ -28,8 +28,8 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientViewDto> getClientById(@PathVariable @NotNull Long id) {
-        ClientViewDto clientViewDto = clientService.getClientById(id);
+    public ResponseEntity<ClientViewDto> getByClientId(@PathVariable("id") @NotNull String id) {
+        ClientViewDto clientViewDto = clientService.getByClientId(id);
         return ResponseEntity.ok(clientViewDto);
     }
 }

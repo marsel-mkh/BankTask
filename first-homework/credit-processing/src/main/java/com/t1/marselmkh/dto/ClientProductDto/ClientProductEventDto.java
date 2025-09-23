@@ -1,4 +1,4 @@
-package com.t1.marselmkh.dto;
+package com.t1.marselmkh.dto.ClientProductDto;
 
 import com.t1.marselmkh.entity.Status;
 import lombok.AccessLevel;

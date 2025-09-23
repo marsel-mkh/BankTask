@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,15 +46,16 @@ public class ClientProductService {
 
         clientProductValidation.validateClientProduct(clientProduct.getClientId(), clientProduct.getProductId());
 
+        clientProduct.setStatus(Status.ACTIVE);
+        clientProduct.setOpenDate(LocalDate.now());
         clientProductRepository.save(clientProduct);
         log.debug("ClientProduct успешно сохранён с id={}", clientProduct.getId());
 
-        sendToKafka(clientProduct);
+        sendToKafka(clientProductMapper.createToEventDto(clientProductCreateDto));
         ClientProductViewDto dto = clientProductMapper.toDto(clientProduct);
         log.info("Возвращён DTO созданного ClientProduct: {}", dto);
         return dto;
     }
-
     @Transactional(readOnly = true)
     public ClientProductViewDto get(Long id) {
         log.info("Запрос на получение ClientProduct по id={}", id);
@@ -81,7 +84,8 @@ public class ClientProductService {
         clientProductRepository.save(clientProduct);
         log.debug("ClientProduct id={} успешно обновлён", id);
 
-        sendToKafka(clientProduct);
+        sendToKafka(clientProductMapper.toEventDto(clientProduct));
+
         ClientProductViewDto dto = clientProductMapper.toDto(clientProduct);
         log.info("Возвращён DTO обновлённого ClientProduct: {}", dto);
         return dto;
@@ -98,12 +102,12 @@ public class ClientProductService {
         clientProduct.setStatus(Status.CLOSED);
         clientProductRepository.deleteById(id);
         log.debug("ClientProduct id={} успешно удалён", id);
-        sendToKafka(clientProduct);
+
+        sendToKafka(clientProductMapper.toEventDto(clientProduct));
     }
 
-    private void sendToKafka(ClientProduct clientProduct) {
-        ClientProductEventDto eventDto = clientProductMapper.toEventDto(clientProduct);
-        ProductKey productKey = getProductKey(clientProduct.getProductId());
+    private void sendToKafka(ClientProductEventDto eventDto) {
+        ProductKey productKey = getProductKey(eventDto.getProductId());
         switch (productKey) {
             case DC, CC, NS, PENS:
                 clientProductProducer.send(clientProductTopic, eventDto);

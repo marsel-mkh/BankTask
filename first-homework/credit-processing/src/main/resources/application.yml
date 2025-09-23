@@ -23,11 +23,8 @@ spring:
 
   kafka:
     bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      group-id: client-group
+      group-id: credit-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     properties:
@@ -41,3 +38,7 @@ ms1:
 
 credit:
   limit: 1000000
+
+kafka:
+  topic:
+    credit-products: "client_credit_products"

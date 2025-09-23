@@ -15,7 +15,9 @@ public class ClientProductCreateDto {
     String clientId;
     @NotBlank(message = "ProductId is mandatory")
     String productId;
-
+    //необязательные поля для кредитных продуктов
     BigDecimal loanAmount;
+    Double interestRate;
+    Integer monthCount;
 
 }

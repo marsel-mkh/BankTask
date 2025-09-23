@@ -1,6 +1,6 @@
 package com.t1.marselmkh.mapper;
 
-import com.t1.marselmkh.dto.ClientProductEventDto;
+import com.t1.marselmkh.dto.ClientProductDto.ClientProductEventDto;
 import com.t1.marselmkh.entity.ProductRegistry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
