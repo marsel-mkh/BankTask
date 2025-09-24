@@ -25,7 +25,7 @@ public class Transaction {
 
     private Long cardId;
 
-    private String type;
+    private TransactionType type;
 
     @Column(precision = 19, scale = 2)
     private BigDecimal amount;

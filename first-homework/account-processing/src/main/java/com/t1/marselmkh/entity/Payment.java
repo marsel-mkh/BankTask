@@ -32,6 +32,9 @@ public class Payment {
 
     private LocalDateTime payedAt;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private PaymentType type;
+
+    private Boolean expired;
 }
 
