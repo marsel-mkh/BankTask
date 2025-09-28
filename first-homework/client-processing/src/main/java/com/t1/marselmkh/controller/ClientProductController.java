@@ -1,5 +1,6 @@
 package com.t1.marselmkh.controller;
 
+import com.t1.marselmkh.annotation.HttpIncomeRequestLog;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductCreateDto;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductUpdateDto;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductViewDto;
@@ -13,9 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+
 @Validated
 @RestController
 @RequestMapping("/client-products")
+@HttpIncomeRequestLog
 @RequiredArgsConstructor
 public class ClientProductController {
 

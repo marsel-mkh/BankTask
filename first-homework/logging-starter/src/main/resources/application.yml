@@ -1,6 +1,6 @@
 spring:
   application:
-    name: client-processing
+    name: logging-starter
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
@@ -30,12 +30,6 @@ spring:
       spring.json.trusted.packages: "*"
 
 server:
-  port: 8082
+  port: 8084
 
-kafka:
-  topic:
-    client-products: "client_products"
-    client-cards: "client_cards"
-    credit-products: "client_credit_products"
-    service-log: "service_logs"
 

@@ -1,0 +1,7 @@
+# META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+com.t1.marselmkh.configuration.HttpLoggingAutoConfiguration
+com.t1.marselmkh.configuration.LogDatasourceErrorAutoConfiguration
+com.t1.marselmkh.internal.ErrorLoggingServiceConfiguration
+com.t1.marselmkh.internal.HttpRequestLogServiceConfiguration
+com.t1.marselmkh.internal.LoggingProducerConfiguration

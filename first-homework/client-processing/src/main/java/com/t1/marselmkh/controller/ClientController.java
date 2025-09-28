@@ -1,5 +1,6 @@
 package com.t1.marselmkh.controller;
 
+import com.t1.marselmkh.annotation.HttpIncomeRequestLog;
 import com.t1.marselmkh.dto.ClientCreateDto;
 import com.t1.marselmkh.dto.ClientViewDto;
 import com.t1.marselmkh.dto.UserViewDto;
@@ -11,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/clients")
+@HttpIncomeRequestLog
+@RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;

@@ -1,5 +1,6 @@
 package com.t1.marselmkh.controller;
 
+import com.t1.marselmkh.annotation.HttpIncomeRequestLog;
 import com.t1.marselmkh.dto.CardEventDto;
 import com.t1.marselmkh.service.CardService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cards")
+@HttpIncomeRequestLog
 @RequiredArgsConstructor
 public class CardController {
 

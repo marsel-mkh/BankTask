@@ -24,6 +24,7 @@
         <module>client-processing</module>
         <module>account-processing</module>
         <module>credit-processing</module>
+        <module>logging-starter</module>
         <!-- при необходимости добавьте common/shared модуль -->
     </modules>
 

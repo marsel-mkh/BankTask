@@ -1,5 +1,6 @@
 package com.t1.marselmkh.controller;
 
+import com.t1.marselmkh.annotation.HttpIncomeRequestLog;
 import com.t1.marselmkh.dto.ProductDto.ProductCreateDto;
 import com.t1.marselmkh.dto.ProductDto.ProductUpdateDto;
 import com.t1.marselmkh.dto.ProductDto.ProductViewDto;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/products")
+@HttpIncomeRequestLog
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
