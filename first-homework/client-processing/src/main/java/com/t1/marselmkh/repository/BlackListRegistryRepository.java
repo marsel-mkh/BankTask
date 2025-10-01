@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BlackListRegistryRepository extends JpaRepository<BlacklistRegistry, Long> {
-    boolean existsByDocumentId(String documentId);
+    Boolean existsByDocumentId(String documentId);
 }

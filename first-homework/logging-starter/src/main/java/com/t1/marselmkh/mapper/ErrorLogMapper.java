@@ -1,6 +1,6 @@
 package com.t1.marselmkh.mapper;
 
-import com.t1.marselmkh.dto.LogEventDto;
+import com.t1.marselmkh.dto.BaseLogEvent;
 import com.t1.marselmkh.entity.ErrorLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,5 +10,5 @@ public interface ErrorLogMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "payload", ignore = true)
-    ErrorLog toEntity(LogEventDto dto);
+    ErrorLog toEntity(BaseLogEvent dto);
 }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class HttpRequestLogService {
     private final LoggingProducer loggingProducer;
 
-
     public void sendToKafka(LogEventDto eventDto) {
         try {
             loggingProducer.sendToKafka(eventDto, Level.INFO);

@@ -1,5 +1,6 @@
 package com.t1.marselmkh.service;
 
+import com.t1.marselmkh.annotation.Cached;
 import com.t1.marselmkh.dto.ClientCreateDto;
 import com.t1.marselmkh.dto.ClientViewDto;
 import com.t1.marselmkh.dto.UserViewDto;
@@ -54,6 +55,7 @@ public class ClientService {
         return userViewDto;
     }
 
+    @Cached
     public ClientViewDto getByClientId(String id) {
         Client client = clientRepository.findByClientId(id)
                 .orElseThrow(() -> {

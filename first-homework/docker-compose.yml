@@ -36,6 +36,16 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+  redis:
+    image: redis:7.2
+    container_name: redis-local
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis_data:/data
+
+
 
 #  client-processing:
 #    image: client-processing:latest
@@ -84,3 +94,4 @@ services:
 
 volumes:
   postgres-data:
+  redis_data:

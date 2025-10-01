@@ -20,10 +20,7 @@ public class ErrorLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "service_name")
     private String serviceName;
-
-    @Column(name = "timestamp")
     private OffsetDateTime timestamp;
 
     @Column(name = "method_signature", length = 2000)
@@ -39,5 +36,4 @@ public class ErrorLog {
     @Lob
     @Column(name = "payload")
     private String payload;
-
 }

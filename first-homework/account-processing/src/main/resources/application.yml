@@ -35,10 +35,16 @@ spring:
 server:
   port: 8081
 
-
 kafka:
   topic:
     client-products: "client_products"
     client-cards: "client_cards"
     client-transaction: "client_transactions"
     client-payments: "client_payments"
+
+fraud_detection:
+  max_transactions: 5
+  period: 10
+
+payment_schedule_service:
+  min_payment_rate: 0.1

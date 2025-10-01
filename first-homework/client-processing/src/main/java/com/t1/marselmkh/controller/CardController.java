@@ -22,6 +22,7 @@ public class CardController {
     @PostMapping
     public ResponseEntity<String> createCard(
             @Valid @RequestBody CardEventDto requestDto) {
+
         cardService.createCard(requestDto);
         return ResponseEntity.ok("Запрос на создание карты отправлен в Kafka");
     }

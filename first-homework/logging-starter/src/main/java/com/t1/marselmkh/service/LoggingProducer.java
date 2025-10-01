@@ -1,7 +1,7 @@
 package com.t1.marselmkh.service;
 
 import com.t1.marselmkh.annotation.Level;
-import com.t1.marselmkh.dto.LogEventDto;
+import com.t1.marselmkh.dto.BaseLogEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class LoggingProducer {
-    private final KafkaTemplate<String, LogEventDto> kafkaTemplate;
+    private final KafkaTemplate<String, BaseLogEvent> kafkaTemplate;
 
     @Value("${spring.application.name:unknown-service}")
     private String serviceName;
@@ -23,9 +23,9 @@ public class LoggingProducer {
     @Value("${kafka.topic.service-log}")
     private String topic;
 
-    public void sendToKafka(LogEventDto logEventDto, Level level) {
+    public void sendToKafka(BaseLogEvent logEventDto, Level level) {
 
-        Message<LogEventDto> message = MessageBuilder
+        Message<BaseLogEvent> message = MessageBuilder
                 .withPayload(logEventDto)
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .setHeader("type", level.name())

@@ -1,8 +1,8 @@
 package com.t1.marselmkh.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.t1.marselmkh.dto.LogEventDto;
-import com.t1.marselmkh.service.LoggingProducer;
+import com.t1.marselmkh.dto.BaseLogEvent;
+ import com.t1.marselmkh.service.LoggingProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -24,20 +24,20 @@ public class LoggingProducerConfiguration {
     @Bean
     @ConditionalOnBean(KafkaTemplate.class)
     @ConditionalOnMissingBean
-    public LoggingProducer loggingProducer(KafkaTemplate<String, LogEventDto> kafkaTemplate) {
+    public LoggingProducer loggingProducer(KafkaTemplate<String, BaseLogEvent> kafkaTemplate) {
         return new LoggingProducer(kafkaTemplate);
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "logEventKafkaTemplate")
-    public KafkaTemplate<String, LogEventDto> logEventKafkaTemplate(
-            ProducerFactory<String, LogEventDto> logEventProducerFactory) {
+    @ConditionalOnMissingBean
+    public KafkaTemplate<String, BaseLogEvent> logEventKafkaTemplate(
+            ProducerFactory<String, BaseLogEvent> logEventProducerFactory) {
         return new KafkaTemplate<>(logEventProducerFactory);
     }
 
     @Bean
-    @ConditionalOnMissingBean(name = "logEventProducerFactory")
-    public ProducerFactory<String, LogEventDto> logEventProducerFactory(
+    @ConditionalOnMissingBean
+    public ProducerFactory<String, BaseLogEvent> logEventProducerFactory(
             KafkaProperties kafkaProperties, ObjectMapper objectMapper) {
 
         Map<String, Object> props = new HashMap<>(kafkaProperties.buildProducerProperties());

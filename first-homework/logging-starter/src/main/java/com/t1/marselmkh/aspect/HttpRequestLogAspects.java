@@ -2,6 +2,8 @@ package com.t1.marselmkh.aspect;
 
 
 import com.t1.marselmkh.dto.LogEventDto;
+import com.t1.marselmkh.properties.HttpIncomeLogProperties;
+import com.t1.marselmkh.properties.HttpOutcomeLogProperties;
 import com.t1.marselmkh.service.HttpRequestLogService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class HttpRequestLogAspects {
     private String serviceName;
 
     private final HttpRequestLogService httpRequestLogService;
+    private final HttpIncomeLogProperties httpIncomeLogProperties;
+    private final HttpOutcomeLogProperties httpOutcomeLogProperties;
 
     /**
      * Исходящие HTTP-запросы (AfterReturning)
@@ -40,16 +44,20 @@ public class HttpRequestLogAspects {
             returning = "result"
     )
     public void logHttpOutcomeRequest(JoinPoint joinPoint, Object result) {
+        if (!httpOutcomeLogProperties.isEnabled())
+            return;
+
         LogEventDto dto = createDto(joinPoint);
 
         if (result instanceof ResponseEntity<?> responseEntity) {
             dto.setResponse(responseEntity.getBody() != null
                     ? responseEntity.getBody().toString()
                     : "null");
-        }else {
+        } else {
             dto.setResponse(result != null ? result.toString() : "null");
         }
-        httpRequestLogService.sendToKafka(dto);
+        if (httpOutcomeLogProperties.isSendToKafka())
+            httpRequestLogService.sendToKafka(dto);
     }
 
     /**
@@ -59,8 +67,13 @@ public class HttpRequestLogAspects {
             "@within(com.t1.marselmkh.annotation.HttpIncomeRequestLog)"
     )
     public void logHttpIncomeRequest(JoinPoint joinPoint) {
+        if (!httpIncomeLogProperties.isEnabled()) {
+            return;
+        }
+
         LogEventDto dto = createDto(joinPoint);
-        httpRequestLogService.sendToKafka(dto);
+        if (httpIncomeLogProperties.isSendToKafka())
+            httpRequestLogService.sendToKafka(dto);
     }
 
     private LogEventDto createDto(JoinPoint joinPoint) {

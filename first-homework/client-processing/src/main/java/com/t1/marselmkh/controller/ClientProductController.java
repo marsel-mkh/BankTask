@@ -34,7 +34,7 @@ public class ClientProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClientProductViewDto> get(
-            @PathVariable @NotBlank @Positive Long id) {
+            @PathVariable("id") @NotBlank @Positive Long id) {
 
         ClientProductViewDto clientProduct = clientProductService.get(id);
         return ResponseEntity.ok(clientProduct);
@@ -42,7 +42,7 @@ public class ClientProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ClientProductViewDto> update(
-            @PathVariable @NotBlank @Positive Long id,
+            @PathVariable("id") @NotBlank @Positive Long id,
             @RequestBody @Valid ClientProductUpdateDto clientProductUpdateDto) {
 
         ClientProductViewDto clientProduct = clientProductService.update(id, clientProductUpdateDto);
@@ -50,7 +50,8 @@ public class ClientProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") @NotBlank @Positive Long id) {
+
         clientProductService.delete(id);
         return ResponseEntity.noContent().build();
     }

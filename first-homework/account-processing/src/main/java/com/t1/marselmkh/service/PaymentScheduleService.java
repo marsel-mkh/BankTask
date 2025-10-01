@@ -6,6 +6,7 @@ import com.t1.marselmkh.entity.Payment;
 import com.t1.marselmkh.entity.PaymentType;
 import com.t1.marselmkh.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,7 +21,8 @@ public class PaymentScheduleService {
 
 
     // минимальный платёж (10% от задолженности)
-    private static final double MIN_PAYMENT_RATE = 0.1;
+    @Value("${payment_schedule_service.min_payment_rate}")
+    private double minPaymentRate;
 
     /**
      * Создаёт график платежей для кредитного счёта.
@@ -32,7 +34,7 @@ public class PaymentScheduleService {
                 .divide(BigDecimal.valueOf(12), RoundingMode.HALF_UP);
 
         BigDecimal minPayment = account.getBalance()
-                .multiply(BigDecimal.valueOf(MIN_PAYMENT_RATE))
+                .multiply(BigDecimal.valueOf(minPaymentRate))
                 .setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal total = minPayment.add(interest);

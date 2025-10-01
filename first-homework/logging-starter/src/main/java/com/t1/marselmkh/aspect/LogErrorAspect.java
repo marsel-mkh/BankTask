@@ -2,7 +2,8 @@ package com.t1.marselmkh.aspect;
 
 import com.t1.marselmkh.annotation.Level;
 import com.t1.marselmkh.annotation.LogDatasourceError;
-import com.t1.marselmkh.dto.LogEventDto;
+import com.t1.marselmkh.dto.ErrorLogEventDto;
+import com.t1.marselmkh.properties.ErrorLogProperties;
 import com.t1.marselmkh.service.ErrorLoggingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,10 @@ import java.util.Arrays;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class LogDatasourceErrorAspect {
+public class LogErrorAspect {
 
     private final ErrorLoggingService errorLoggingService;
+    private final ErrorLogProperties errorLogProperties;
 
     @Value("${spring.application.name:unknown-service}")
     private String serviceName;
@@ -34,20 +36,23 @@ public class LogDatasourceErrorAspect {
             throwing = "ex"
     )
     public void afterThrowing(JoinPoint joinPoint, Throwable ex) {
+        if (!errorLogProperties.isEnabled()) {
+            return;
+        }
         Level level = resolveLevel(joinPoint);
-        LogEventDto logEventDto = LogEventDto.builder()
+        ErrorLogEventDto logEventDto = ErrorLogEventDto.builder()
                 .timestamp(OffsetDateTime.now())
                 .serviceName(serviceName)
                 .methodSignature(joinPoint.getSignature().toShortString())
                 .exceptionMessage(ex.getMessage())
                 .stackTrace(ex.toString())
-                .inputParameters( Arrays.asList(joinPoint.getArgs()))
+                .inputParameters(Arrays.asList(joinPoint.getArgs()))
                 .build();
         errorLoggingService.sendOrPersist(logEventDto, level);
 
     }
 
-    private Level resolveLevel(JoinPoint joinPoint){
+    private Level resolveLevel(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         LogDatasourceError annotation = method.getAnnotation(LogDatasourceError.class);

@@ -85,7 +85,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
-            <optional>true</optional>
+        </dependency>
+
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <!-- Test -->
@@ -95,6 +100,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- My starter -->
         <dependency>
             <groupId>com.t1.marselmkh</groupId>
             <artifactId>logging-starter</artifactId>

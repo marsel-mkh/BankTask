@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 
 @Repository
-public interface TransactionRepository extends CrudRepository<Transaction,Long> {
-    int countByCardIdAndTimestampBetween(Long cardId, LocalDateTime from, LocalDateTime now);
+public interface TransactionRepository extends CrudRepository<Transaction, Long> {
+    Long countByCardIdAndTimestampBetween(Long cardId, LocalDateTime from, LocalDateTime now);
 }
