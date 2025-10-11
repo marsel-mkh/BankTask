@@ -13,6 +13,10 @@ import com.t1.marselmkh.repository.ProductRegistryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -31,6 +35,8 @@ public class CreditProcessingService {
     private final PaymentRegistryRepository paymentRegistryRepository;
     private final ProductRegistryMapper productRegistryMapper;
     private final RestTemplate restTemplate;
+    private final TokenBuilder tokenBuilder;
+
 
     @Value("${credit.limit}")
     private BigDecimal creditLimit;
@@ -38,29 +44,32 @@ public class CreditProcessingService {
     @Value("${ms1.getUrl}")
     private String ms1GetUrl;
 
-@Transactional
-public void processCredit(ClientProductEventDto clientProductEventDto) {
-    log.info("Старт обработки кредита. clientId={}", clientProductEventDto.getClientId());
-    ClientInfoDto client = getClient(clientProductEventDto);
-    log.debug("Информация о клиенте получена: {}", client);
+    @Value("${spring.application.name}")
+    private String msName;
 
-    checkCreditLimitAndOverdue(clientProductEventDto);
-    log.info("Проверка лимита и просрочек пройдена. clientId={}", clientProductEventDto.getClientId());
+    @Transactional
+    public void processCredit(ClientProductEventDto clientProductEventDto) {
+        log.info("Старт обработки кредита. clientId={}", clientProductEventDto.getClientId());
+        ClientInfoDto client = getClient(clientProductEventDto);
+        log.debug("Информация о клиенте получена: {}", client);
 
-    ProductRegistry productRegistry = productRegistryMapper.toEntity(clientProductEventDto);
-    productRegistry = productRegistryRepository.save(productRegistry);
-    log.info("Продуктовый реестр создан. productRegistryId={}", productRegistry.getId());
+        checkCreditLimitAndOverdue(clientProductEventDto);
+        log.info("Проверка лимита и просрочек пройдена. clientId={}", clientProductEventDto.getClientId());
 
-    List<PaymentRegistry> paymentRegistries = generatePaymentSchedule(
-            clientProductEventDto.getLoanAmount(),
-            clientProductEventDto.getInterestRate(),
-            clientProductEventDto.getMonthCount(),
-            productRegistry.getId());
+        ProductRegistry productRegistry = productRegistryMapper.toEntity(clientProductEventDto);
+        productRegistry = productRegistryRepository.save(productRegistry);
+        log.info("Продуктовый реестр создан. productRegistryId={}", productRegistry.getId());
 
-    paymentRegistryRepository.saveAll(paymentRegistries);
-    log.info("График платежей сохранён. productRegistryId={}, платежей={}", productRegistry.getId(), paymentRegistries.size());
-    log.info("Обработка кредита завершена. clientId={}", clientProductEventDto.getClientId());
-}
+        List<PaymentRegistry> paymentRegistries = generatePaymentSchedule(
+                clientProductEventDto.getLoanAmount(),
+                clientProductEventDto.getInterestRate(),
+                clientProductEventDto.getMonthCount(),
+                productRegistry.getId());
+
+        paymentRegistryRepository.saveAll(paymentRegistries);
+        log.info("График платежей сохранён. productRegistryId={}, платежей={}", productRegistry.getId(), paymentRegistries.size());
+        log.info("Обработка кредита завершена. clientId={}", clientProductEventDto.getClientId());
+    }
 
     private void checkCreditLimitAndOverdue(ClientProductEventDto clientProductEventDto) {
         List<ProductRegistry> credits =
@@ -89,8 +98,20 @@ public void processCredit(ClientProductEventDto clientProductEventDto) {
 
 
     private ClientInfoDto getClient(ClientProductEventDto clientProductEventDto) {
+        String token = tokenBuilder.generateServiceToken(msName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
         String url = ms1GetUrl + clientProductEventDto.getClientId();
-        ClientInfoDto client = restTemplate.getForObject(url, ClientInfoDto.class);
+        ResponseEntity<ClientInfoDto> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                ClientInfoDto.class
+        );
+        ClientInfoDto client = response.getBody();
 
         if (client == null) {
             throw new ClientNotFoundException("Client not found with id: " + clientProductEventDto.getClientId());
