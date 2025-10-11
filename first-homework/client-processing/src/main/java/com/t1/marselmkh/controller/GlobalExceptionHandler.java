@@ -1,10 +1,7 @@
 package com.t1.marselmkh.controller;
 
 import com.t1.marselmkh.dto.ErrorResponse;
-import com.t1.marselmkh.exception.ClientNotFoundException;
-import com.t1.marselmkh.exception.ClientProductNotFound;
-import com.t1.marselmkh.exception.ProductKeyNotFound;
-import com.t1.marselmkh.exception.ProductNotFoundException;
+import com.t1.marselmkh.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +57,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
         return buildResponse("Product not found", ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(BlacklistedUserException.class)
+    public ResponseEntity<ErrorResponse> handleBlacklistedUser(BlacklistedUserException ex) {
+        return buildResponse("User in blackList", ex.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
     private ResponseEntity<ErrorResponse> buildResponse(String error, String message, HttpStatus status) {
         ErrorResponse response = new ErrorResponse(
                 error,

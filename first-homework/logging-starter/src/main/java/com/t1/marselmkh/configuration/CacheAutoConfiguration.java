@@ -1,6 +1,7 @@
 package com.t1.marselmkh.configuration;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.t1.marselmkh.aspect.CachedAspect;
 import com.t1.marselmkh.properties.CacheProperties;
 import com.t1.marselmkh.service.CacheService;
@@ -15,7 +16,7 @@ public class CacheAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public CachedAspect cachedAspect(CacheService cacheService) {
-        return new CachedAspect(cacheService);
+    public CachedAspect cachedAspect(CacheService cacheService, ObjectMapper objectMapper) {
+        return new CachedAspect(cacheService, objectMapper );
     }
 }

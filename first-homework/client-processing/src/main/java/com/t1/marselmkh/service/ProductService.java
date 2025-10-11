@@ -9,6 +9,7 @@ import com.t1.marselmkh.mapper.ProductMapper;
 import com.t1.marselmkh.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
+    @PreAuthorize("hasAuthority('MASTER')")
     @Transactional
     public ProductViewDto createProduct(ProductCreateDto productDto) {
         log.info("Создание нового продукта: {}", productDto);
@@ -33,6 +35,7 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
+    @PreAuthorize("hasAuthority('MASTER') or hasAuthority('GRAND_EMPLOYEE')")
     @Transactional
     public ProductViewDto updateProduct(Long id, ProductUpdateDto productDto) {
         log.info("Обновление продукта с id={}: {}", id, productDto);
@@ -61,6 +64,7 @@ public class ProductService {
         return productMapper.toDto(product);
     }
 
+    @PreAuthorize("hasAuthority('MASTER') or hasAuthority('GRAND_EMPLOYEE')")
     @Transactional
     public void deleteProduct(Long id) {
         log.info("Удаление продукта с id={}", id);
