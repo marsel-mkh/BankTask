@@ -1,0 +1,14 @@
+# META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+
+com.t1.marselmkh.configuration.HttpLoggingAutoConfiguration
+com.t1.marselmkh.configuration.LogErrorAutoConfiguration
+com.t1.marselmkh.configuration.MetricAutoConfiguration
+com.t1.marselmkh.configuration.CacheAutoConfiguration
+
+
+com.t1.marselmkh.internal.ErrorLoggingServiceConfiguration
+com.t1.marselmkh.internal.HttpRequestLogServiceConfiguration
+com.t1.marselmkh.internal.LoggingProducerConfiguration
+com.t1.marselmkh.internal.MetricServiceConfiguration
+com.t1.marselmkh.internal.CacheServiceConfiguration
+
