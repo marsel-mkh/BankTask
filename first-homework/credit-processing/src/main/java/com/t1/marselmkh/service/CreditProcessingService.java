@@ -5,7 +5,6 @@ import com.t1.marselmkh.dto.ClientInfoDto;
 import com.t1.marselmkh.entity.PaymentRegistry;
 import com.t1.marselmkh.entity.ProductRegistry;
 import com.t1.marselmkh.exception.ClientCreditIsExpiredException;
-import com.t1.marselmkh.exception.ClientNotFoundException;
 import com.t1.marselmkh.exception.CreditLimitedException;
 import com.t1.marselmkh.mapper.ProductRegistryMapper;
 import com.t1.marselmkh.repository.PaymentRegistryRepository;
@@ -13,13 +12,8 @@ import com.t1.marselmkh.repository.ProductRegistryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,23 +28,15 @@ public class CreditProcessingService {
     private final ProductRegistryRepository productRegistryRepository;
     private final PaymentRegistryRepository paymentRegistryRepository;
     private final ProductRegistryMapper productRegistryMapper;
-    private final RestTemplate restTemplate;
-    private final TokenBuilder tokenBuilder;
-
+    private final ClientService clientService;
 
     @Value("${credit.limit}")
     private BigDecimal creditLimit;
 
-    @Value("${ms1.getUrl}")
-    private String ms1GetUrl;
-
-    @Value("${spring.application.name}")
-    private String msName;
-
     @Transactional
     public void processCredit(ClientProductEventDto clientProductEventDto) {
         log.info("Старт обработки кредита. clientId={}", clientProductEventDto.getClientId());
-        ClientInfoDto client = getClient(clientProductEventDto);
+        ClientInfoDto client = clientService.getClient(clientProductEventDto);
         log.debug("Информация о клиенте получена: {}", client);
 
         checkCreditLimitAndOverdue(clientProductEventDto);
@@ -94,30 +80,6 @@ public class CreditProcessingService {
         if (hasExpiredCredits) {
             throw new ClientCreditIsExpiredException("Client has overdue payments, id: " + clientProductEventDto.getClientId());
         }
-    }
-
-
-    private ClientInfoDto getClient(ClientProductEventDto clientProductEventDto) {
-        String token = tokenBuilder.generateServiceToken(msName);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-        String url = ms1GetUrl + clientProductEventDto.getClientId();
-        ResponseEntity<ClientInfoDto> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                ClientInfoDto.class
-        );
-        ClientInfoDto client = response.getBody();
-
-        if (client == null) {
-            throw new ClientNotFoundException("Client not found with id: " + clientProductEventDto.getClientId());
-        }
-
-        return client;
     }
 
     private List<PaymentRegistry> generatePaymentSchedule(
