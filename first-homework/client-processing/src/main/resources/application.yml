@@ -51,3 +51,6 @@ kafka:
 security:
   token: tstrs4g434wyhser5htstrs4g434wyhser5htstrs4g434wyhser5htstrs4g434wyhser5htstrs4g434wyhser5h
   expiration: 86400000
+
+metric:
+  scheduler: 60000
