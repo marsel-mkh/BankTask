@@ -28,7 +28,7 @@ public class ProductsMetrics {
     @PostConstruct
     public void init() {
         for (ProductKey key : ProductKey.values()) {
-            Gauge.builder("open_products_total", () ->
+            Gauge.builder("open_products", () ->
                             Optional.ofNullable(redisTemplateForMetrics.opsForValue().get(METRIC_KEY_PREFIX + key.name()))
                                     .map(Long::doubleValue)
                                     .orElse(0.0)
@@ -44,6 +44,7 @@ public class ProductsMetrics {
     @Scheduled(fixedRateString = "${metric.scheduler}")
     public void refreshMetrics() {
         try {
+            log.info("Получение количества продуктов");
             Map<ProductKey, Long> counts = jdbcRepository.countOpenedByType();
 
             counts.forEach((key, count) ->
