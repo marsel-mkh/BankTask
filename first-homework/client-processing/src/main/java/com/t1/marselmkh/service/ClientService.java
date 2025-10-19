@@ -1,6 +1,8 @@
 package com.t1.marselmkh.service;
 
 import com.t1.marselmkh.annotation.Cached;
+import com.t1.marselmkh.annotation.LogDatasourceError;
+import com.t1.marselmkh.annotation.Metric;
 import com.t1.marselmkh.dto.ClientCreateDto;
 import com.t1.marselmkh.dto.ClientViewDto;
 import com.t1.marselmkh.dto.UserViewDto;
@@ -28,6 +30,7 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@LogDatasourceError
 @RequiredArgsConstructor
 public class ClientService {
 
@@ -40,6 +43,7 @@ public class ClientService {
     private final RoleRepository roleRepository;
 
     @Transactional(noRollbackFor = {BlacklistedUserException.class})
+    @Metric
     public UserViewDto userRegistration(ClientCreateDto clientCreateDto) {
         log.info("Запуск регистрации пользователя: {}", clientCreateDto.getEmail());
 
@@ -76,6 +80,7 @@ public class ClientService {
     }
 
     @Cached
+    @Metric
     @PreAuthorize("hasAuthority('SERVICE')")
     public ClientViewDto getByClientId(String id) {
         Client client = clientRepository.findByClientId(id)

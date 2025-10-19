@@ -1,5 +1,8 @@
 package com.t1.marselmkh.service;
 
+import com.t1.marselmkh.annotation.Cached;
+import com.t1.marselmkh.annotation.LogDatasourceError;
+import com.t1.marselmkh.annotation.Metric;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductCreateDto;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductEventDto;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductUpdateDto;
@@ -25,6 +28,7 @@ import java.time.LocalDate;
 
 @Slf4j
 @Service
+@LogDatasourceError
 @RequiredArgsConstructor
 public class ClientProductService {
     private final ClientProductRepository clientProductRepository;
@@ -39,6 +43,7 @@ public class ClientProductService {
     @Value("${kafka.topic.credit-products}")
     private String clientCreditProductTopic;
 
+    @Metric
     @Transactional
     public ClientProductViewDto create(ClientProductCreateDto clientProductCreateDto) {
         log.info("Создание нового ClientProduct: {}", clientProductCreateDto);
@@ -56,6 +61,9 @@ public class ClientProductService {
         log.info("Возвращён DTO созданного ClientProduct: {}", dto);
         return dto;
     }
+
+    @Cached
+    @Metric
     @Transactional(readOnly = true)
     public ClientProductViewDto get(Long id) {
         log.info("Запрос на получение ClientProduct по id={}", id);
@@ -69,6 +77,7 @@ public class ClientProductService {
         return dto;
     }
 
+    @Metric
     @Transactional
     public ClientProductViewDto update(Long id, ClientProductUpdateDto clientProductUpdateDto) {
         log.info("Запрос на обновление ClientProduct id={} данными: {}", id, clientProductUpdateDto);
@@ -91,6 +100,7 @@ public class ClientProductService {
         return dto;
     }
 
+    @Metric
     @Transactional
     public void delete(Long id) {
         log.info("Запрос на удаление ClientProduct id={}", id);

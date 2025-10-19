@@ -1,5 +1,6 @@
 package com.t1.marselmkh.service;
 
+import com.t1.marselmkh.annotation.LogDatasourceError;
 import com.t1.marselmkh.dto.ClientProductDto.ClientProductEventDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@LogDatasourceError
 @RequiredArgsConstructor
 public class ClientProductProducer {
     private final KafkaTemplate<String, ClientProductEventDto> kafkaTemplate;

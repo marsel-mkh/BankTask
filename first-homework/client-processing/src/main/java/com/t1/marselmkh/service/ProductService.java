@@ -1,5 +1,6 @@
 package com.t1.marselmkh.service;
 
+import com.t1.marselmkh.annotation.LogDatasourceError;
 import com.t1.marselmkh.dto.ProductDto.ProductCreateDto;
 import com.t1.marselmkh.dto.ProductDto.ProductUpdateDto;
 import com.t1.marselmkh.dto.ProductDto.ProductViewDto;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 
 @Slf4j
 @Service
+@LogDatasourceError
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;

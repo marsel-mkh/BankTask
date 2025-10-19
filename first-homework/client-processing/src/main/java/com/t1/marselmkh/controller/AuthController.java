@@ -1,5 +1,6 @@
 package com.t1.marselmkh.controller;
 
+import com.t1.marselmkh.annotation.HttpIncomeRequestLog;
 import com.t1.marselmkh.dto.auth.JwtResponse;
 import com.t1.marselmkh.dto.auth.LoginRequest;
 import com.t1.marselmkh.service.jwt.AuthService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@HttpIncomeRequestLog
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
