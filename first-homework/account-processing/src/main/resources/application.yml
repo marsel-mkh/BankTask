@@ -1,0 +1,50 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
+
+  datasource:
+#    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/t1db}
+    url: jdbc:postgresql://localhost:5432/t1db
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  liquibase:
+    enabled: true
+    default-schema: public
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: account-processing-group
+      key-deserializer:  org.apache.kafka.common.serialization.UUIDDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    properties:
+      spring.json.trusted.packages: "*"
+      spring.json.ignore-unknown-fields: true
+
+server:
+  port: 8081
+
+kafka:
+  topic:
+    client-products: "client_products"
+    client-cards: "client_cards"
+    client-transaction: "client_transactions"
+    client-payments: "client_payments"
+
+fraud_detection:
+  max_transactions: 5
+  period: 10
+
+payment_schedule_service:
+  min_payment_rate: 0.1
